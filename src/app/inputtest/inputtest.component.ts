@@ -9,12 +9,24 @@ import { Http } from '@angular/http';
 export class InputtestComponent implements OnInit {
 
   spaceScreens: Array<any>;
+  logEntrys: Array<any>;
+  logsTables: Array<any>;
+  selectedLog: string = 'DealertrackSync_Log';
+  _http: Http;
 
   constructor(private http: Http) {
-
+    this._http = http;
     http.get('data.json')
       .map(response => response.json().screenshots)
       .subscribe(res => this.spaceScreens = res);
+
+     http.get('http://localhost:20136/api/Log/GetLogsForTable/?tableName='+this.selectedLog+'&environment=local&sort=desc&skip=0&take=100')
+      .map(response => response.json())
+      .subscribe(res => this.logEntrys = res);
+
+     http.get('http://localhost:20136/api/Log/GetTables')
+      .map(response => response.json())
+      .subscribe(res => this.logsTables = res);
 
     // this.spaceScreens = [
     //   {
@@ -41,6 +53,16 @@ export class InputtestComponent implements OnInit {
 
 
   }
+
+  onChange(newValue) {
+    console.log(newValue);
+    this.selectedLog = newValue;
+    // ... do other stuff here ...
+
+    this._http.get('http://localhost:20136/api/Log/GetLogsForTable/?tableName='+this.selectedLog+'&environment=release&sort=desc&skip=0&take=10')
+      .map(response => response.json())
+      .subscribe(res => this.logEntrys = res);
+}
 
   likeMe(i) {
     if (this.spaceScreens[i].liked == 0)

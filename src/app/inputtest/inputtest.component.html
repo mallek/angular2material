@@ -1,23 +1,13 @@
 <md-toolbar color="primary">
-  <span>GameViewer</span>
+  <span>LogViewer {{selectedLog}}</span>
+
   <span class="spacer"></span>
-  <button md-icon-button [mdMenuTriggerFor]="menu">
-      <md-icon>more_vert</md-icon>
-    </button>
-  <md-menu #menu="mdMenu">
-    <button md-menu-item>
-        <md-icon>fingerprint</md-icon>
-        <span>Login</span>
-      </button>
-    <button md-menu-item disabled>
-        <md-icon>announcement</md-icon>
-        <span>Issues</span>
-      </button>
-    <button md-menu-item>
-        <md-icon>notifications_off</md-icon>
-        <span>Disable alerts</span>
-      </button>
-  </md-menu>
+ <md-select placeholder="Select Log" [ngModel]="selectedLog" (ngModelChange)="onChange($event)">
+      <md-option *ngFor="let logs of logsTables" [value]="logs.TABLE_NAME">
+        {{ logs.TABLE_NAME }}
+      </md-option>
+</md-select>
+
 </md-toolbar>
 
 <md-tab-group>
@@ -47,5 +37,27 @@
       </md-slider>
       <md-slide-toggle>Some setting</md-slide-toggle>
     </div>
+  </md-tab>
+  <md-tab label="Logs">
+    <md-card *ngFor="let log of logEntrys; let i = index">
+      <md-card-content>
+        <h1>{{ log.Logger }}</h1>
+
+        <p>{{ log.Message }}</p>
+        <p>{{ log.Exception }}</p>
+
+      </md-card-content>
+      <md-card-actions>
+        <button md-button>
+            <i class="material-icons">today</i> {{log.Date | date: 'short' }}
+        </button>
+        <button md-button>
+            <i class="material-icons">developer_mode</i> {{log.Level}}
+        </button>
+        <button md-button>
+            <i class="material-icons">computer</i> {{log.Environment}}
+        </button>
+      </md-card-actions>
+    </md-card>
   </md-tab>
 </md-tab-group>
